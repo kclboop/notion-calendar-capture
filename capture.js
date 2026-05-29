@@ -45,7 +45,7 @@ function waitForUserInput(prompt) {
       process.env.NOTION_EMAIL
     );
 
-    await page.click('button:has-text("Continue")');
+    await page.click('div[role="button"]:has-text("Continue")');
     await page.waitForTimeout(3000);
 
     // CHECK IF PASSWORD OR VERIFICATION CODE IS REQUESTED
@@ -68,7 +68,7 @@ function waitForUserInput(prompt) {
       );
     }
 
-    await page.click('button:has-text("Continue")');
+    await page.click('div[role="button"]:has-text("Continue")');
 
     // WAIT FOR LOGIN
     console.log('Waiting for login to complete...');
