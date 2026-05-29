@@ -1,4 +1,19 @@
 const { chromium } = require('playwright');
+const readline = require('readline');
+
+function waitForUserInput(prompt) {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    rl.question(prompt, (answer) => {
+      rl.close();
+      resolve(answer);
+    });
+  });
+}
 
 (async () => {
   try {
@@ -33,12 +48,25 @@ const { chromium } = require('playwright');
     await page.click('button:has-text("Continue")');
     await page.waitForTimeout(3000);
 
-    // PASSWORD
-    console.log('Entering password...');
-    await page.fill(
-      'input[type="password"]',
-      process.env.NOTION_PASSWORD
-    );
+    // CHECK IF PASSWORD OR VERIFICATION CODE IS REQUESTED
+    const passwordField = await page.$('input[type="password"]');
+    const codeField = await page.$('input[placeholder*="code"], input[placeholder*="Code"]');
+
+    if (codeField) {
+      console.log('Verification code requested...');
+      console.log('Check your email for the verification code.');
+      const code = await waitForUserInput('Enter the verification code: ');
+      await page.fill(
+        'input[placeholder*="code"], input[placeholder*="Code"]',
+        code
+      );
+    } else if (passwordField) {
+      console.log('Entering password...');
+      await page.fill(
+        'input[type="password"]',
+        process.env.NOTION_PASSWORD
+      );
+    }
 
     await page.click('button:has-text("Continue")');
 
