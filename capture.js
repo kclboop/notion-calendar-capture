@@ -19,8 +19,12 @@ function waitForUserInput(prompt) {
   try {
     console.log('Starting capture at', new Date().toISOString());
     
-    const browser = await chromium.launch({
-      headless: true,
+   const context = await chromium.launchPersistentContext('./profile', {
+  headless: true,
+  viewport: { width: 1600, height: 1200 }
+});
+
+const page = await context.newPage();
       args: ['--disable-blink-features=AutomationControlled']
     });
 
