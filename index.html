@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="refresh" content="600">
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+    }
+
+    img {
+      width: 100%;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <img id="calendar">
+
+  <script>
+    document.getElementById('calendar').src =
+      './calendar.png?t=' + Date.now();
+  </script>
+</body>
+</html>
