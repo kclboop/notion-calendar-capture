@@ -3,7 +3,9 @@ name: Capture Notion Calendar
 on:
   schedule:
     - cron: '*/10 * * * *'
-
+permissions:
+  contents: write
+  
   workflow_dispatch:
 
 jobs:
