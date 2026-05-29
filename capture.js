@@ -30,7 +30,7 @@ const { chromium } = require('playwright');
       process.env.NOTION_EMAIL
     );
 
-    await page.click('button[type="submit"]');
+    await page.click('button:has-text("Continue")');
     await page.waitForTimeout(3000);
 
     // PASSWORD
@@ -40,7 +40,7 @@ const { chromium } = require('playwright');
       process.env.NOTION_PASSWORD
     );
 
-    await page.click('button[type="submit"]');
+    await page.click('button:has-text("Continue")');
 
     // WAIT FOR LOGIN
     console.log('Waiting for login to complete...');
