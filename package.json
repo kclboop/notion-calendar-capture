@@ -1,0 +1,7 @@
+{
+  "name": "notion-calendar-capture",
+  "version": "1.0.0",
+  "dependencies": {
+    "playwright": "^1.52.0"
+  }
+}
