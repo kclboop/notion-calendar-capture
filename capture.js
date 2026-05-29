@@ -1,39 +1,20 @@
 const { chromium } = require('playwright');
-const readline = require('readline');
-
-function waitForUserInput(prompt) {
-  return new Promise((resolve) => {
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
-
-    rl.question(prompt, (answer) => {
-      rl.close();
-      resolve(answer);
-    });
-  });
-}
 
 (async () => {
+  let browser, context, page;
   try {
     console.log('Starting capture at', new Date().toISOString());
     
-   const context = await chromium.launchPersistentContext('./profile', {
-  headless: true,
-  viewport: { width: 1600, height: 1200 }
-});
-
-const page = await context.newPage();
+    browser = await chromium.launch({
+      headless: true,
       args: ['--disable-blink-features=AutomationControlled']
     });
 
-    const page = await browser.newPage({
-      viewport: {
-        width: 1600,
-        height: 1200
-      }
+    context = await browser.newContext({
+      viewport: { width: 1600, height: 1200 }
     });
+
+    page = await context.newPage();
 
     // OPEN LOGIN PAGE
     console.log('Going to login page...');
@@ -57,13 +38,8 @@ const page = await context.newPage();
     const codeField = await page.$('input[placeholder*="code"], input[placeholder*="Code"]');
 
     if (codeField) {
-      console.log('Verification code requested...');
-      console.log('Check your email for the verification code.');
-      const code = await waitForUserInput('Enter the verification code: ');
-      await page.fill(
-        'input[placeholder*="code"], input[placeholder*="Code"]',
-        code
-      );
+      console.log('Verification code requested - this requires manual intervention');
+      throw new Error('2FA verification code required - GitHub Actions cannot handle interactive input');
     } else if (passwordField) {
       console.log('Entering password...');
       await page.fill(
@@ -99,11 +75,13 @@ const page = await context.newPage();
       fullPage: true
     });
 
-    await browser.close();
-
     console.log('Calendar captured at', new Date().toISOString());
   } catch (error) {
     console.error('Error capturing calendar:', error);
     process.exit(1);
+  } finally {
+    if (page) await page.close();
+    if (context) await context.close();
+    if (browser) await browser.close();
   }
 })();
